@@ -5,7 +5,7 @@ function Header() {
     return(<>
         <Navbar bg="dark"className="p-3">
             <Container>
-                <Navbar.Brand className="text-success">Student Alumni Interaction</Navbar.Brand>
+                <Navbar.Brand href="#"><Link to={'/'} className="text-success text-decoration-none">Student Alumni Interaction</Link></Navbar.Brand>
                 <Nav className="justify-content-end">
                     <Link to={'/about'} className="mx-3 text-decoration-none">About</Link>
                     <Link to={'/gallery'} className="mx-3 text-decoration-none">Gallery</Link>

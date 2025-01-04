@@ -1,7 +1,11 @@
 import { useState } from "react";
-import { Button, Container, Form } from "react-bootstrap"
-import { Link } from 'react-router-dom'
+import { Button, Container, Form, Toast, ToastBody, ToastContainer } from "react-bootstrap"
+import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
 function Login() {
+    const navigate=useNavigate()
+    const [message, setmessage] = useState('')
+    const [show, setshow] = useState(false)
     const [login, setlogin] = useState({
         email: '',
         password: ''
@@ -12,13 +16,31 @@ function Login() {
             [Event.target.name]: Event.target.value,
         })
     }
-    function Handlesubmit(Event) {
+    async function Handlesubmit(Event) {
         Event.preventDefault();
-        console.log(login)
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}users/login`, login)
+            setmessage(response.data.message)
+            setshow(true)
+            localStorage.setItem('token',response.data.token)
+            navigate('/')
+        } catch (error) {
+            setmessage(error.response?.data.message || error.message)
+            setshow(true)
+        }
     }
     return (<>
-        <Container className="container-fluid d-flex justify-content-center align-items-center" style={{ height: "100vh", backgroundColor: '#FEF9F2' }}>
-            <Form onSubmit={Handlesubmit} className="border" style={{ boxShadow: '5px 5px 25px #181C14', padding: '20px', borderRadius: '10px', width: '24dvw', height: '53dvh' }}>
+        <ToastContainer position="top-center" className="p-3">
+            <Toast bg="info" show={show} onClose={() => setshow(!show)} delay={4000} autohide>
+                <Toast.Header>
+                    <strong className="me-auto">Notification</strong>
+                    <small>Just now</small>
+                </Toast.Header>
+                <ToastBody>{message}</ToastBody>
+            </Toast>
+        </ToastContainer>
+        <Container fluid className="d-flex justify-content-center align-items-center" style={{ height: "100vh", backgroundColor: "whitesmoke" }}>
+            <Form onSubmit={Handlesubmit} className="border" style={{ boxShadow: '5px 5px 15px #181C14', padding: '25px', borderRadius: '10px', width: '24dvw', height: '53dvh', backgroundColor: '#FEF9F2' }}>
                 <h1 className="text-center">LOGIN</h1>
                 <Form.Group className="my-3">
                     <Form.Label className="fw-bold">Email</Form.Label>
